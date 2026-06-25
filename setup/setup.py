@@ -218,7 +218,15 @@ def setup():
 
     x = pd.concat([df['home_team'], df['away_team']])
     u_teams = x.unique()
-    print(u_teams)
+
+    def get_team_ids(cursor):
+        query = "SELECT id, name FROM teams;"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        team_dict = {}
+        for i in rows:
+            team_dict[i[1]] = i[0]
+        return team_dict
 
     try:
         con = psycopg2.connect(dbname="fifa", user="postgres", password= "yourpassword", host='localhost', port = "5432")
@@ -229,11 +237,24 @@ def setup():
         cursor.executemany(insert_query, team_list)
         con.commit()
         print("Inserted all teams")
+
+        team_id_map = get_team_ids(cursor)
+        df['home_team_id'] = df['home_team'].map(team_id_map)
+        df['away_team_id'] = df['away_team'].map(team_id_map)
+        insert_query = "INSERT into matches(home_team_id, away_team_id, date, home_score, away_score, tournament, tournament_weight, neutral) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        df = df[['home_team_id', 'away_team_id', 'date', 'home_score', 'away_score', 'tournament', 'comp_weights', 'neutral']]
+        match_list=[]
+        for i in df.values:
+            match_list.append([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7],])
+        cursor.executemany(insert_query,match_list)
+        print("Inserted all teams into matches")
+        con.commit()
         cursor.close()
         con.close()
     except psycopg2.DatabaseError as e:
         print("Error!")
         return
+
 
 
 setup()
