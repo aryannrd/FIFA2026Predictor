@@ -1,7 +1,9 @@
 import kagglehub
 import os
 import pandas as pd
-import psycopg2
+from db import get_connection, get_team_ids
+from rankings import sql_ranking
+
 
 def setup():
 
@@ -219,17 +221,8 @@ def setup():
     x = pd.concat([df['home_team'], df['away_team']])
     u_teams = x.unique()
 
-    def get_team_ids(cursor):
-        query = "SELECT id, name FROM teams;"
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        team_dict = {}
-        for i in rows:
-            team_dict[i[1]] = i[0]
-        return team_dict
-
     try:
-        con = psycopg2.connect(dbname="fifa", user="postgres", password= "yourpassword", host='localhost', port = "5432")
+        con=get_connection()
         cursor = con.cursor()
         print("Connected to DB")
         team_list = [[str(team,)] for  team in u_teams]
@@ -237,7 +230,6 @@ def setup():
         cursor.executemany(insert_query, team_list)
         con.commit()
         print("Inserted all teams")
-
         team_id_map = get_team_ids(cursor)
         df['home_team_id'] = df['home_team'].map(team_id_map)
         df['away_team_id'] = df['away_team'].map(team_id_map)
@@ -251,9 +243,11 @@ def setup():
         con.commit()
         cursor.close()
         con.close()
-    except psycopg2.DatabaseError as e:
-        print("Error!")
+    except Exception as e:
+        print(f"Error: {e}")
         return
+    sql_ranking()
+
 
 
 
