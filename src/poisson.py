@@ -13,7 +13,8 @@ def poisson_calc():
     cursor.execute(overall_query)
     overall_avg_goals= cursor.fetchone()[0]
 
-    team_query = """SELECT team_id, SUM(goals_scored * tournament_weight) / SUM(tournament_weight) / %s 
+
+    team_query = """SELECT team_id, SUM(goals_scored * tournament_weight) / NULLIF(SUM(tournament_weight),0) / %s 
         FROM 
         (SELECT home_team_id as team_id, home_score as goals_scored, tournament_weight FROM matches     
          UNION ALL     
@@ -22,3 +23,5 @@ def poisson_calc():
     """
     cursor.execute(team_query,(overall_avg_goals,))
     attack_strength = cursor.fetchall()
+
+poisson_calc()
