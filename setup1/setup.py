@@ -5,6 +5,13 @@ from db import get_connection, get_team_ids
 from rankings import sql_ranking
 
 
+def flatten(tournaments: dict):
+    updated_tournament_dict = {}
+    for i in tournaments.values():
+        for j in i["competitions"]:
+            updated_tournament_dict[j] = i["weight"]
+    return updated_tournament_dict
+
 def setup():
 
     path = kagglehub.dataset_download("martj42/international-football-results-from-1872-to-2017")
@@ -204,12 +211,7 @@ def setup():
                 if j==tournament_name:
                     return i.get("weight")
         return 0 """
-    def flatten(tournaments: dict):
-        updated_tournament_dict = {}
-        for i in tournaments.values():
-            for j in i["competitions"]:
-                updated_tournament_dict[j] = i["weight"]
-        return updated_tournament_dict
+
 
     flat_comp_weights = flatten(competition_weights)
 
