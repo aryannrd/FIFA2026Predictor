@@ -1,8 +1,8 @@
 import scipy.stats
 
-from setup1.db import get_connection
+from src.setup1.db import get_connection
 import numpy as np
-from scipy.stats import poisson
+
 max_goals = 10
 
 def overall_goals():

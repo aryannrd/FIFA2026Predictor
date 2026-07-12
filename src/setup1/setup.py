@@ -1,6 +1,8 @@
 import kagglehub
 import os
 import pandas as pd
+from kagglehub import KaggleDatasetAdapter
+
 from db import get_connection, get_team_ids
 from rankings import sql_ranking
 
@@ -15,15 +17,21 @@ def flatten(tournaments: dict):
 def setup():
 
     path = kagglehub.dataset_download("martj42/international-football-results-from-1872-to-2017")
-
-    print("Path to dataset files:", path)
+    path2 = kagglehub.dataset_download("rovnez/fc-26-fifa-26-player-data")
+    print("Path to dataset files:", path, path2)
     csv_path = os.path.join(path, 'results.csv')
+    csv2_path = os.path.join(path2, 'players.csv')
     if os.path.exists(csv_path):
         df = pd.read_csv(csv_path)
-        print("Success!")
-        print(df.head())
     else:
         print("Error!")
+    if os.path.exists(csv2_path):
+        df2 = pd.read_csv(csv_path)
+        useful_columns=['player_id', 'short_name', 'player_position']
+    else:
+        print("Error!")
+
+
 
     df = df.dropna(subset=['home_score', 'away_score'])
     df['date'] = pd.to_datetime(df['date'])
@@ -226,12 +234,10 @@ def setup():
     try:
         con=get_connection()
         cursor = con.cursor()
-        print("Connected to DB")
         team_list = [[str(team,)] for  team in u_teams]
         insert_query = "INSERT INTO teams (name) VALUES(%s) ON CONFLICT (name) DO NOTHING"
         cursor.executemany(insert_query, team_list)
         con.commit()
-        print("Inserted all teams")
         team_id_map = get_team_ids(cursor)
         df['home_team_id'] = df['home_team'].map(team_id_map)
         df['away_team_id'] = df['away_team'].map(team_id_map)
@@ -241,7 +247,6 @@ def setup():
         for i in df.values:
             match_list.append([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7],])
         cursor.executemany(insert_query,match_list)
-        print("Inserted all teams into matches")
         con.commit()
         cursor.close()
         con.close()

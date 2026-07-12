@@ -57,7 +57,6 @@ def sql_ranking():
     for name, data in corrected_rankings.items():
         team_id = team_id_map.get(name)
         if team_id is None:
-            print(f"Skipping {name}. Not found in teams table")
             continue
         ranking_list.append([
             team_id,

@@ -1,4 +1,4 @@
-from src.poisson import overall_goals, calculate_xg, predict_match, poisson_attack_strength, poisson_defense_strength
+from src.stat_calc.poisson import overall_goals, calculate_xg, predict_match, poisson_attack_strength, poisson_defense_strength
 
 avg_goals = overall_goals()
 attack_strength = poisson_attack_strength(avg_goals)
