@@ -1,6 +1,8 @@
 from src.setup1.db import get_connection, get_ranking_map
 from src.stat_calc.poisson import overall_goals, poisson_attack_strength, poisson_defense_strength, calculate_xg
 from src.stat_calc.elo import calculate_individual_elo
+from src.setup1.marketvalue import market_value, mapping_values
+
 
 def populate_match_features():
     data_list=[]
@@ -59,12 +61,16 @@ def populate_match_features():
     return
 
 def update_match_features(def_score):
+    values_df= mapping_values()
+    values_df['market_value_eur'] = values_df['market_value_eur'].fillna(0).astype(int)
+    market_val_score = dict(zip(values_df['team_id'].astype(int), values_df['market_value_eur']))
     con = get_connection()
     cursor = con.cursor()
     cursor.execute("SELECT match_id, home_team_id, away_team_id FROM match_features")
     rows = cursor.fetchall()
 
-    update_query = "UPDATE match_features SET home_defense_score=%s, away_defense_score=%s WHERE match_id=%s"
+    update_query = """UPDATE match_features SET home_defense_score = %s, away_defense_score = %s, 
+                      home_market_value  = %s,away_market_value  = %s WHERE match_id = %s """
     update_list = []
     for row in rows:
         match_id = row[0]
@@ -72,7 +78,9 @@ def update_match_features(def_score):
         away_team_id = row[2]
         home_def = def_score.get(home_team_id, 1.0)
         away_def = def_score.get(away_team_id, 1.0)
-        update_list.append((home_def, away_def, match_id))
+        home_mv = market_val_score.get(home_team_id, 0)
+        away_mv = market_val_score.get(away_team_id, 0)
+        update_list.append((home_def, away_def, home_mv, away_mv, match_id))
 
     cursor.executemany(update_query, update_list)
     con.commit()

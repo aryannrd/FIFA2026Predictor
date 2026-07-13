@@ -16,7 +16,6 @@ def overall_goals():
                                 FROM matches) as all_matches"""   #calculating the average goals across all tournaments normalized by weight
     cursor.execute(overall_goal_query)
     overall_avg_goals = float(cursor.fetchone()[0])
-    print(overall_avg_goals)
     if overall_avg_goals is None:
         raise ValueError("No match data found.")
     return overall_avg_goals

@@ -8,32 +8,60 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
 from sklearn.utils.class_weight import compute_sample_weight
-
 from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 import joblib
 
 def train_model():
-    features = ['home_elo', 'away_elo', 'elo_difference', 'home_rank', 'away_rank', 'rank_difference', 'home_xg', 'away_xg', 'neutral','home_defense_score', 'away_defense_score',
-        'home_form', 'away_form', 'is_heavy_favorite', 'is_heavy_underdog','tournament_weight']
+    features = ['home_elo', 'away_elo', 'elo_difference', 'home_rank', 'away_rank', 'rank_difference', 'home_xg', 'away_xg', 'neutral',
+        'home_form', 'away_form', 'tournament_weight','home_value_log','away_value_log','home_attack_vs_away_defense','away_attack_vs_home_defense','elo_closeness', 'elo_win_probability','xg_difference','defense_difference','form_difference', 'combined_defense_strength','overall_strength_gap','team_balance']
     target = 'result'
 
     con = get_connection()
     query = """SELECT home_elo, away_elo, elo_difference, home_rank, away_rank, rank_difference, home_xg, away_xg, neutral,home_defense_score, away_defense_score,
-        home_form, away_form, result, tournament_weight FROM match_features"""
+        home_form, away_form, result, tournament_weight,home_market_value, away_market_value FROM match_features"""
     df = pd.read_sql(query, con) #getting also sql data into a dataset
+
+    home_defense_median = df['home_defense_score'].median()
+    away_defense_median = df['away_defense_score'].median()
+    df['home_defense_score'] = df['home_defense_score'].replace(0, home_defense_median)
+    df['away_defense_score'] = df['away_defense_score'].replace(0,away_defense_median)
+
     df['home_rank'] = df['home_rank'].fillna(200)
     df['away_rank'] = df['away_rank'].fillna(200)
     df['rank_difference'] = df['home_rank'] - df['away_rank']
     df['neutral'] = df['neutral'].astype(int)
-    df['is_heavy_favorite'] = (df['elo_difference'] > 150).astype(int)
-    df['is_heavy_underdog'] = (df['elo_difference'] < -150).astype(int)
+
+    df['home_market_value'] = df['home_market_value'].replace(0, np.nan)
+    df['away_market_value'] = df['away_market_value'].replace(0, np.nan)
+    median_value = df['home_market_value'].median()
+    df['home_market_value'] = df['home_market_value'].fillna(median_value)
+    df['away_market_value'] = df['away_market_value'].fillna(median_value)
+    df['home_value_log'] = np.log1p(df['home_market_value'])
+    df['away_value_log'] = np.log1p(df['away_market_value'])
+    df = df.drop(columns=['home_market_value', 'away_market_value'])
+
+    df['home_attack_vs_away_defense'] = df['home_xg']/df['away_defense_score']
+    df['away_attack_vs_home_defense'] = df['away_xg'] / df['home_defense_score']
+
+    df['elo_closeness'] = abs(df['elo_difference'])
+    df['combined_defense_strength'] = (df['home_defense_score'] +df['away_defense_score'])
+    df["elo_win_probability"] = (1 /(1 + 10 ** ((df["away_elo"] - df["home_elo"]) / 400)))
+    df["xg_difference"] = (df["home_xg"] -df["away_xg"])
+    df["defense_difference"] = (df["away_defense_score"] -df["home_defense_score"])
+    df["form_difference"] = (df["home_form"] -df["away_form"])
+    df['overall_strength_gap'] = (abs(df['elo_difference']) +abs(df['rank_difference']))
+    df['team_balance'] = (abs(df['xg_difference']) +abs(df['defense_difference']))
     con.close()
 
     X = df[features]
     y = df[target]
-    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.25, random_state=42) #training on 80% dataset, testing on 20%
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.25, random_state=42, stratify=y) #training on 80% dataset, testing on 20%
+    cv = StratifiedKFold(
+        n_splits=5,
+        shuffle=True,
+        random_state=42
+    )
 
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
@@ -78,9 +106,17 @@ def train_model():
         y_test,
         model_xg.predict(X_test)
     ))
-    """joblib.dump(model, 'models/logistic_regression.pkl')
-    joblib.dump(model_xg, 'models/xgboost.pkl')
-    joblib.dump(scaler, 'models/scaler.pkl')"""
+    importance = pd.DataFrame({
+        "feature": X.columns,
+        "importance": model_rf.feature_importances_
+    })
+
+    print(
+        importance.sort_values(
+            "importance",
+            ascending=False
+        )
+    )
 
 
 train_model()

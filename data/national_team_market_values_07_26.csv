@@ -1,0 +1,210 @@
+country,market_value
+France,€1.52bn
+England,€1.36bn
+Spain,€1.22bn
+Portugal,€1.01bn
+Germany,€947.00m
+Brazil,€928.20m
+Argentina,€807.50m
+Netherlands,€754.20m
+Norway,€589.90m
+Belgium,€547.50m
+Ivory Coast,€522.10m
+Senegal,€478.10m
+Turkiye,€473.70m
+Morocco,€447.70m
+Sweden,€409.08m
+Croatia,€387.30m
+United States,€385.65m
+Ecuador,€368.70m
+Denmark,€365.00m
+Uruguay,€359.30m
+Switzerland,€332.50m
+Italy,€319.00m
+Colombia,€302.35m
+Greece,€275.60m
+Japan,€270.85m
+Georgia,€261.60m
+Algeria,€256.90m
+Ukraine,€247.00m
+Austria,€245.20m
+Russia,€242.70m
+Ghana,€234.35m
+Poland,€232.10m
+Serbia,€209.50m
+Hungary,€209.20m
+Canada,€198.65m
+Cameroon,€198.60m
+Mexico,€191.85m
+Czechia,€188.18m
+Wales,€180.65m
+Nigeria,€172.30m
+Scotland,€170.25m
+Paraguay,€153.65m
+Kosovo,€147.80m
+Republic of Ireland,€147.65m
+Bosnia-Herzegovina,€146.40m
+Democratic Republic of the Congo,€143.65m
+South Korea,€139.05m
+Mali,€116.65m
+Egypt,€116.48m
+Burkina Faso,€110.70m
+Slovenia,€100.50m
+Albania,€88.80m
+Iceland,€88.50m
+Uzbekistan,€85.13m
+Northern Ireland,€79.90m
+The Gambia,€79.23m
+Venezuela,€77.95m
+Australia,€77.45m
+Tunisia,€69.95m
+Montenegro,€69.73m
+Israel,€68.10m
+Chile,€66.80m
+Slovakia,€59.85m
+Romania,€56.95m
+Haiti,€55.85m
+Cape Verde,€54.50m
+South Africa,€47.45m
+Angola,€46.53m
+Finland,€42.45m
+Armenia,€42.23m
+Saudi Arabia,€40.68m
+Guinea-Bissau,€39.05m
+Suriname,€35.80m
+Gabon,€35.53m
+Panama,€34.55m
+North Macedonia,€34.45m
+New Zealand,€34.30m
+Iran,€32.05m
+Peru,€30.63m
+Bulgaria,€30.15m
+United Arab Emirates,€29.05m
+Costa Rica,€28.20m
+Togo,€27.65m
+Curaçao,€25.78m
+Zimbabwe,€25.35m
+Mauritania,€25.30m
+Azerbaijan,€21.68m
+Honduras,€21.43m
+Iraq,€21.20m
+Jordan,€20.30m
+Guinea,€20.05m
+Comoros,€20.00m
+Qatar,€19.93m
+Cyprus,€19.90m
+Indonesia,€19.65m
+Kazakhstan,€19.55m
+Bolivia,€18.50m
+Benin,€18.20m
+Belarus,€17.50m
+Lithuania,€16.35m
+Malta,€15.00m
+Luxembourg,€14.98m
+China,€14.33m
+Liberia,€14.30m
+Zambia,€14.18m
+Estonia,€13.90m
+Guadeloupe,€13.66m
+Sierra Leone,€13.33m
+Dominican Republic,€12.83m
+Burundi,€10.98m
+Niger,€10.73m
+Libya,€10.48m
+Palestine,€10.31m
+Moldova,€9.68m
+Latvia,€9.38m
+Tanzania,€9.13m
+Jamaica,€9.05m
+Uganda,€8.75m
+Chad,€8.55m
+Central African Republic,€8.43m
+Oman,€8.33m
+Tajikistan,€8.25m
+Syria,€7.99m
+Guatemala,€7.78m
+Vietnam,€7.25m
+Bangladesh,€7.25m
+Kyrgyzstan,€7.23m
+Rwanda,€7.13m
+Madagascar,€6.80m
+North Korea,€6.75m
+Bahrain,€6.08m
+Lebanon,€5.83m
+Thailand,€5.48m
+El Salvador,€5.36m
+New Caledonia,€5.25m
+Kuwait,€5.18m
+Faroe Islands,€5.13m
+Kenya,€4.88m
+Singapore,€4.58m
+Pakistan,€4.42m
+Eritrea,€4.38m
+Equatorial Guinea,€4.20m
+India,€4.00m
+Andorra,€3.87m
+Nicaragua,€3.83m
+Martinique,€3.73m
+Malaysia,€3.53m
+Ethiopia,€3.43m
+Hong Kong,€3.38m
+Philippines,€3.30m
+Turkmenistan,€3.28m
+Sudan,€3.10m
+Myanmar,€3.00m
+Republic of the Congo,€2.68m
+Botswana,€2.68m
+Cambodia,€2.58m
+Cuba,€2.43m
+Trinidad and Tobago,€2.28m
+Yemen,€2.15m
+Namibia,€2.08m
+Chinese Taipei,€2.01m
+Malawi,€1.95m
+Gibraltar,€1.84m
+São Tomé and Príncipe,€1.73m
+Grenada,€1.70m
+Fiji,€1.66m
+South Sudan,€1.63m
+Guyana,€1.55m
+Mozambique,€1.53m
+Laos,€1.32m
+Nepal,€1.25m
+San Marino,€1.25m
+Afghanistan,€1.19m
+Eswatini,€1.08m
+Puerto Rico,€1.03m
+Sri Lanka,€1.02m
+Brunei Darussalam,€935k
+Bhutan,€845k
+Somalia,€825k
+Timor-Leste,€810k
+Mauritius,€800k
+Seychelles,€775k
+Maldives,€755k
+Mongolia,€695k
+Solomon Islands,€660k
+Antigua and Barbuda,€650k
+Liechtenstein,€625k
+Lesotho,€575k
+Djibouti,€575k
+Saint Kitts and Nevis,€575k
+Vanuatu,€570k
+Saint Vincent and the Grenadines,€475k
+Sint Maarten,€450k
+Bonaire,€400k
+Macau,€385k
+Bermuda,€375k
+Montserrat,€375k
+Belize,€350k
+Guam,€345k
+Samoa,€275k
+Saint Lucia,€275k
+Barbados,€200k
+Aruba,€175k
+United States Virgin Islands,€125k
+French Guiana,€125k
+Papua New Guinea,€120k
+Cook Islands,€110k
+Tahiti,€85k
+Turks and Caicos Islands,€50k
