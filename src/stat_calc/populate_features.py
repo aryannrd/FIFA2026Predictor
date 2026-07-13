@@ -24,8 +24,8 @@ def populate_match_features():
         data.append(elo[0])
         data.append(elo[1]) #getting home_elo and away_elo
 
-        data.append(ranking_map.get(row[1]))
-        data.append(ranking_map.get(row[2]))#getting home and away ranks
+        data.append(ranking_map.get(row[1],200))
+        data.append(ranking_map.get(row[2],200))#getting home and away ranks
 
         home_xg, away_xg = calculate_xg(attack_strength,defense_strength,row[1], row[2], row[5], avg_goals)
         data.append(home_xg)
@@ -48,15 +48,37 @@ def populate_match_features():
             break
 
     insert_query = """ INSERT INTO match_features(match_id, home_elo, away_elo, home_rank, away_rank, home_xg, away_xg, neutral, result)
-        VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s);
+        VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT (match_id) DO NOTHING;
     """
 
     cursor.executemany(insert_query,data_list)
     con.commit()
+    update_match_features(defense_strength)
     cursor.close()
     con.close()
+    return
 
-populate_match_features()
+def update_match_features(def_score):
+    con = get_connection()
+    cursor = con.cursor()
+    cursor.execute("SELECT match_id, home_team_id, away_team_id FROM match_features")
+    rows = cursor.fetchall()
+
+    update_query = "UPDATE match_features SET home_defense_score=%s, away_defense_score=%s WHERE match_id=%s"
+    update_list = []
+    for row in rows:
+        match_id = row[0]
+        home_team_id = row[1]
+        away_team_id = row[2]
+        home_def = def_score.get(home_team_id, 1.0)
+        away_def = def_score.get(away_team_id, 1.0)
+        update_list.append((home_def, away_def, match_id))
+
+    cursor.executemany(update_query, update_list)
+    con.commit()
+    cursor.close()
+    con.close()
+    return
 
 
 

@@ -5,7 +5,7 @@ from kagglehub import KaggleDatasetAdapter
 
 from db import get_connection, get_team_ids
 from rankings import sql_ranking
-
+from src.stat_calc.poisson import poisson_defense_strength
 
 def flatten(tournaments: dict):
     updated_tournament_dict = {}
@@ -241,7 +241,8 @@ def setup():
         team_id_map = get_team_ids(cursor)
         df['home_team_id'] = df['home_team'].map(team_id_map)
         df['away_team_id'] = df['away_team'].map(team_id_map)
-        insert_query = "INSERT into matches(home_team_id, away_team_id, date, home_score, away_score, tournament, tournament_weight, neutral) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        insert_query = "INSERT into matches(home_team_id, away_team_id, date, home_score, away_score, tournament, tournament_weight, neutral) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING"
+
         df = df[['home_team_id', 'away_team_id', 'date', 'home_score', 'away_score', 'tournament', 'comp_weights', 'neutral']]
         match_list=[]
         for i in df.values:
