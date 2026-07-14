@@ -1,7 +1,5 @@
 import joblib
 import numpy as np
-import pandas as pd
-from src.models.explainers import explain_prediction
 from src.stat_calc.poisson import overall_goals, calculate_xg, poisson_attack_strength, poisson_defense_strength, \
     predict_match
 from src.stat_calc.elo import calculate_individual_elo
@@ -117,7 +115,6 @@ def predict(home_team, away_team, neutral,tournament_weight=1.0):
             0.25 * lr_prob
     )
     return final_prob
-
 
 
 

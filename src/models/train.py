@@ -46,7 +46,6 @@ FROM match_features mf
 JOIN matches m
 ON mf.match_id = m.id"""
     df = pd.read_sql(query, con) #getting also sql data into a dataset
-
     home_defense_median = df['home_defense_score'].median()
     away_defense_median = df['away_defense_score'].median()
     df['home_defense_score'] = df['home_defense_score'].replace(0, home_defense_median)
@@ -82,10 +81,11 @@ ON mf.match_id = m.id"""
             df["elo_difference"]
             - (~df["neutral"]) * 60
     )
-
+    df['tournament_weight'] = df['tournament_weight'].fillna(0.5)
+    df['date'] = pd.to_datetime(df['date'])
     X = df[features]
     y = df[target]
-    df['date'] = pd.to_datetime(df['date'])
+
 
     train_df = df[df['date'] < '2023-01-01']
     test_df = df[df['date'] >= '2023-01-01']
@@ -166,4 +166,3 @@ ON mf.match_id = m.id"""
     joblib.dump(model_rf, os.path.join(BASE_DIR, 'random_forest.pkl'))
     return
 
-train_model()
