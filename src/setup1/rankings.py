@@ -1,7 +1,7 @@
 from datetime import date
 today = date.today()
 import requests
-from db import get_connection, get_team_ids
+from src.setup1.db import get_connection, get_team_ids
 
 def get_rankings():
     url = "https://api.fifa.com/api/v3/fifarankings/rankings/live?gender=1&sportType=0&language=en"

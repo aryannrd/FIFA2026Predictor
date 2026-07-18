@@ -71,4 +71,70 @@ def populate_form():
     con.close()
     return
 
-populate_form()
+
+
+def draw_last_20():
+    con = get_connection()
+    cursor = con.cursor()
+    query = """WITH team_matches AS (
+    -- Home team perspective
+    SELECT
+        id AS match_id,
+        date,
+        home_team_id AS team_id,
+        (home_score = away_score)::int AS is_draw
+    FROM matches
+
+    UNION ALL
+
+    -- Away team perspective
+    SELECT
+        id AS match_id,
+        date,
+        away_team_id AS team_id,
+        (home_score = away_score)::int AS is_draw
+    FROM matches
+),
+
+rolling_stats AS (
+    SELECT
+        match_id,
+        team_id,
+        AVG(is_draw::float) OVER (
+            PARTITION BY team_id
+            ORDER BY date
+            ROWS BETWEEN 20 PRECEDING AND 1 PRECEDING
+        ) AS draw_rate_last20
+    FROM team_matches
+)
+
+SELECT
+    m.id AS match_id,
+    m.home_team_id,
+    m.away_team_id,
+    h.draw_rate_last20 AS home_draw_rate_last20,
+    a.draw_rate_last20 AS away_draw_rate_last20
+
+FROM matches m
+
+LEFT JOIN rolling_stats h
+    ON h.match_id = m.id
+   AND h.team_id = m.home_team_id
+
+LEFT JOIN rolling_stats a
+    ON a.match_id = m.id
+   AND a.team_id = m.away_team_id
+
+ORDER BY m.date;"""
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    new_rows={}
+    for row in rows:
+        match_id = row[0]
+        if match_id not in new_rows:
+            new_rows[match_id] = {}
+        new_rows[match_id]["home_draw_rate_last20"] = float(row[3]) if row[3] is not None else 0.233
+        new_rows[match_id]["away_draw_rate_last20"] = float(row[4]) if row[4] is not None else 0.233
+    cursor.close()
+    con.close()
+    return new_rows

@@ -3,41 +3,14 @@ import os
 import pandas as pd
 from kagglehub import KaggleDatasetAdapter
 
-from db import get_connection, get_team_ids
-from rankings import sql_ranking
+from src.setup1.db import get_connection, get_team_ids
+from src.setup1.rankings import sql_ranking
+from src.models.train import train_model
+from src.stat_calc.form import populate_form
 from src.stat_calc.poisson import poisson_defense_strength
+from src.stat_calc.populate_features import populate_match_features
 
-def flatten(tournaments: dict):
-    updated_tournament_dict = {}
-    for i in tournaments.values():
-        for j in i["competitions"]:
-            updated_tournament_dict[j] = i["weight"]
-    return updated_tournament_dict
-
-def setup():
-
-    path = kagglehub.dataset_download("martj42/international-football-results-from-1872-to-2017")
-    path2 = kagglehub.dataset_download("rovnez/fc-26-fifa-26-player-data")
-    print("Path to dataset files:", path, path2)
-    csv_path = os.path.join(path, 'results.csv')
-    csv2_path = os.path.join(path2, 'players.csv')
-    if os.path.exists(csv_path):
-        df = pd.read_csv(csv_path)
-    else:
-        print("Error!")
-    if os.path.exists(csv2_path):
-        df2 = pd.read_csv(csv_path)
-        useful_columns=['player_id', 'short_name', 'player_position']
-    else:
-        print("Error!")
-
-
-
-    df = df.dropna(subset=['home_score', 'away_score'])
-    df['date'] = pd.to_datetime(df['date'])
-    df= df[df['date'] > '2000-01-01']
-
-    competition_weights = {
+competition_weights = {
         "Tier 1": {
             "weight": 1.00,
             "competitions": [
@@ -212,6 +185,29 @@ def setup():
         }
     }
 
+def flatten(tournaments: dict):
+    updated_tournament_dict = {}
+    for i in tournaments.values():
+        for j in i["competitions"]:
+            updated_tournament_dict[j] = i["weight"]
+    return updated_tournament_dict
+
+def setup():
+
+    path = kagglehub.dataset_download("martj42/international-football-results-from-1872-to-2017")
+    csv_path = os.path.join(path, 'results.csv')
+    if os.path.exists(csv_path):
+        df = pd.read_csv(csv_path)
+    else:
+        print("Error!")
+        return
+
+
+
+    df = df.dropna(subset=['home_score', 'away_score'])
+    df['date'] = pd.to_datetime(df['date'])
+    df= df[df['date'] > '2000-01-01']
+
     """def get_tournament_weight(tournament_name):
         x= competition_weights.values()
         for i in x:
@@ -255,6 +251,9 @@ def setup():
         print(f"Error: {e}")
         return
     sql_ranking()
+    populate_match_features()
+    populate_form()
+    train_model()
 
 
 
