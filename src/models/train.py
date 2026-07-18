@@ -165,4 +165,3 @@ ON mf.match_id = m.id"""
     joblib.dump(scaler, os.path.join(BASE_DIR, 'scaler.pkl'))
     joblib.dump(model_rf, os.path.join(BASE_DIR, 'random_forest.pkl'))
     return
-
