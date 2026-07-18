@@ -1,10 +1,12 @@
 from src.api.startup import state
 import numpy as np
-from src.stat_calc.poisson import calculate_xg, predict_match
+from src.stat_calc.poisson import calculate_xg, predict_match, overall_goals
+
+avg_goals = overall_goals()
+
 
 def predict(home_team, away_team, neutral, tournament_weight=1.0):
     # Get everything from state
-    avg_goals = state['avg_goals']
     attack_strength = state['attack_strength']
     defense_strength = state['defense_strength']
     elo_ratings = state['elo_ratings']
@@ -64,5 +66,6 @@ def predict(home_team, away_team, neutral, tournament_weight=1.0):
     return {
         "home_win": float(final_prob[2]),
         "draw": float(final_prob[1]),
-        "away_win": float(final_prob[0])
+        "away_win": float(final_prob[0]),
+        "elo_win_probability": float(elo_win_probability)
     }

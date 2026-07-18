@@ -52,10 +52,8 @@ def predict_match(request: PredictRequest):
     flat_comp_weights = state['flat_comp_weights']
     id1 = teams_info.get(request.team1)
     id2 = teams_info.get(request.team2)
-    print(id1,id2)
     if id1 is None or id2 is None:
         raise HTTPException(status_code=404, detail="Team not found")
     tournament_weight = flat_comp_weights.get(request.tournament, 0.6)
     final_prob = predict(id1, id2, request.neutral, tournament_weight)
-    print(final_prob)
     return final_prob

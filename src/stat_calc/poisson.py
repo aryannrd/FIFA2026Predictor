@@ -20,8 +20,6 @@ def overall_goals():
         raise ValueError("No match data found.")
     return overall_avg_goals
 
-
-
 def poisson_attack_strength(overall_avg_goals):
     con = get_connection()
     cursor = con.cursor()
