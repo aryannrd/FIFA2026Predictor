@@ -192,7 +192,7 @@ def flatten(tournaments: dict):
             updated_tournament_dict[j] = i["weight"]
     return updated_tournament_dict
 
-def setup():
+"""def old_setup():
 
     path = kagglehub.dataset_download("martj42/international-football-results-from-1872-to-2017")
     csv_path = os.path.join(path, 'results.csv')
@@ -208,13 +208,13 @@ def setup():
     df['date'] = pd.to_datetime(df['date'])
     df= df[df['date'] > '2000-01-01']
 
-    """def get_tournament_weight(tournament_name):
+    def get_tournament_weight(tournament_name):
         x= competition_weights.values()
         for i in x:
             for j in i.get("competitions"):
                 if j==tournament_name:
                     return i.get("weight")
-        return 0 """
+        return 0 
 
 
     flat_comp_weights = flatten(competition_weights)
@@ -253,13 +253,12 @@ def setup():
     sql_ranking()
     populate_match_features()
     populate_form()
-    train_model()
+
+"""
 
 
-
-
-setup()
-
+def setup():
+    sql_ranking()
 
 
 

@@ -14,6 +14,7 @@ import joblib
 from sklearn.metrics import log_loss
 from sklearn.calibration import CalibratedClassifierCV
 from src.stat_calc.form import draw_last_20
+import pandas as pd
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -83,9 +84,9 @@ ON mf.match_id = m.id"""
     )
     df['tournament_weight'] = df['tournament_weight'].fillna(0.5)
     df['date'] = pd.to_datetime(df['date'])
+    df = df.dropna(subset=features)
     X = df[features]
     y = df[target]
-
 
     train_df = df[df['date'] < '2023-01-01']
     test_df = df[df['date'] >= '2023-01-01']
